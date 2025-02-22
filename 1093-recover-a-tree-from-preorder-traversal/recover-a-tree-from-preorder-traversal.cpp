@@ -1,25 +1,27 @@
 class Solution {
 public:
     TreeNode* recoverFromPreorder(string traversal) {
-        int index = 0;
-        return helper(traversal, index, 0);
-    }
-    TreeNode* helper(const string& traversal, int& index, int depth) {
-        if (index >= traversal.size()) return nullptr;
-        int dashCount = 0;
-        while (index + dashCount < traversal.size() &&
-        traversal[index + dashCount] == '-') dashCount++;
-        if (dashCount != depth) return nullptr;
-        index += dashCount;
-        int value = 0;
-        while (index < traversal.size() && isdigit(traversal[index])) {
-            value = value * 10 + (traversal[index] - '0');
-            index++;
-        }
-        TreeNode* node = new TreeNode(value);
-        node->left = helper(traversal, index, depth + 1);
-        node->right = helper(traversal, index, depth + 1);
+        vector<TreeNode*> stack;
+        int i = 0;
+        while(i < traversal.length()) {
+            int level = 0, val = 0;
+            while(traversal[i] == '-') {
+                i++;
+                level++;
+            }
+            while(i < traversal.length() && traversal[i] != '-') {
+                val = val*10 + traversal[i] - '0';
+                i++;
+            }
 
-        return node;
+            TreeNode* node = new TreeNode(val);
+            while(stack.size() > level) stack.pop_back();
+            if(!stack.empty()) {
+                if(!stack.back()->left) stack.back()->left = node;
+                else stack.back()->right = node;
+            }
+            stack.push_back(node);
+        }
+        return stack[0];
     }
 };
