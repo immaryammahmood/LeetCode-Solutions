@@ -1,14 +1,38 @@
 class Solution {
-    public:
-        int countCompleteSubarrays(vector<int>& nums) {
-            int k = unordered_set<int>(nums.begin(),nums.end()).size(), res = 0;
-            for (int i = 0; i < nums.size(); i++) {
-                unordered_set<int> st;
-                for (int j = i; j < nums.size(); j++) {
-                    st.insert(nums[j]);
-                    if (st.size() == k) res++;
-                }
+public:
+    int countCompleteSubarrays(vector<int>& nums) {
+        int l = 0, r = 0, n = nums.size(), m = 0;
+        bitset<2001> ht;
+        bitset<2001> curr;
+        vector<int> ht2(2001, 0);
+        for(int i = 0; i < n; ++i)
+        {
+            
+            if(!ht.test(nums[i]))
+            {
+                ht.set(nums[i]);
             }
-            return res;
         }
-    };
+        while(r < n)
+        {
+            curr.set(nums[r]);
+            ht2[nums[r]]++;
+            while(curr == ht && l <= r)
+            {
+                //cout << l << " " << r << " " << m << endl;
+                m += (n - r);
+                //cout << nums[l] << endl;
+                ht2[nums[l]]--;
+                if(ht2[nums[l]] == 0)
+                {
+                    curr.reset(nums[l]);
+
+                }
+                l++;
+                //cout << l << " " << r << " " << m << endl;
+            }
+            r++;
+        }
+        return m;
+    }
+};
