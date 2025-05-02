@@ -1,32 +1,43 @@
 class Solution {
 public:
-    string pushDominoes(string s) {
-        s = 'L' + s + 'R';
-        string res;
+    string pushDominoes(string dominoes) {
+        std::size_t num_of_dominoes = dominoes.size();
+        int last_right = -1;
+        int last_left = 0;
 
-        int prev = 0;
-        for (int curr = 1; curr < s.size(); ++curr) {
-            if (s[curr] == '.') {
-                continue;
-            }
+        for (std::size_t i = 0; i < num_of_dominoes; ++i) {
+            char c = dominoes[i];
 
-            int span = curr - prev - 1;
-            if (prev > 0) 
-                res += s[prev];
-
-            if (s[prev] == s[curr]) {
-                res += string(span, s[prev]);
+            if (c == 'R') {
+                if (last_right != -1) {
+                    for (std::size_t r = last_right + 1; r < i; ++r) {
+                        dominoes[r] = 'R';
+                    }
+                }
+                last_right = i;
+            } else if (c == 'L') {
+                if (last_right != -1) {
+                    for (std::size_t left_p = last_right + 1, right_p = i - 1;
+                         left_p < right_p; left_p++, right_p--) {
+                        dominoes[left_p] = 'R';
+                        dominoes[right_p] = 'L';
+                    }
+                    last_right = -1;
+                } else {
+                    for (std::size_t l = last_left; l < i; ++l) {
+                        dominoes[l] = 'L';
+                    }
+                }
+                last_left = i;
             }
-            else if (s[prev] == 'L' && s[curr] == 'R') {
-                res += string(span, '.');
-            }
-            else { 
-                res += string(span / 2, 'R')
-                     + string(span % 2, '.')
-                     + string(span / 2, 'L');
-            }
-            prev = curr;
         }
-        return res;
+
+        if (last_right != -1) {
+            for (int i = last_right + 1; i < num_of_dominoes; ++i) {
+                dominoes[i] = 'R';
+            }
+        }
+
+        return dominoes;
     }
 };
