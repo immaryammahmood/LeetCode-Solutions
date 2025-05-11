@@ -5,32 +5,27 @@ public:
         cin.tie(0);
         cout.tie(0);
 
-        long long sum1=0,sum2=0;
-        bool flag1=false,flag2=false;
+        long long sum1 = 0, sum2 = 0;
+        int zeros1 = 0, zeros2 = 0;
 
-        for(auto &n :nums1){
-            sum1+=n;
-
-            if(n==0) {
-                sum1++;
-                flag1=true;
-            }
+        for (int n : nums1) {
+            if (n == 0) zeros1++;
+            sum1 += n;
         }
 
-        for(auto &n :nums2){
-            sum2+=n;
-
-            if(n==0) {
-                sum2++;
-                flag2=true;
-            }
+        for (int n : nums2) {
+            if (n == 0) zeros2++;
+            sum2 += n;
         }
 
-        if(flag1==false && sum1<sum2 || flag2==false && sum2<sum1){
-            return -1;
-        } 
+        if (zeros1 == 0 && zeros2 == 0) {
+            return sum1 == sum2 ? sum1 : -1;
+        } else if (zeros1 == 0) {
+            return sum2 + zeros2 <= sum1 ? sum1 : -1;
+        } else if (zeros2 == 0) {
+            return sum1 + zeros1 <= sum2 ? sum2 : -1;
+        }
 
-        return max(sum1,sum2);
-
+        return max(sum1 + zeros1, sum2 + zeros2);
     }
 };
