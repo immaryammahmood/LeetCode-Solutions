@@ -1,26 +1,25 @@
+// precompute, dp
+const int MOD = 1e9 + 7;
+const int MAX_T = 1e5;
+vector<int> init() {
+    vector<int> DP(MAX_T + 26);
+    for (int i = 0; i < 26; ++i) {
+        DP[i] = 1;
+    }
+    for (int i = 26; i < size(DP); ++i) {
+        DP[i] = (DP[i - 26] + DP[(i - 26) + 1]) % MOD;
+    }
+    return DP;
+}
+
+const auto& DP = init();
 class Solution {
 public:
     int lengthAfterTransformations(string s, int t) {
-        vector<int> cnt(26);
-        for (char ch : s) {
-            ++cnt[ch - 'a'];
+        int result = 0;
+        for (const auto& x : s) {
+            result = (result + DP[(x - 'a') + t]) % MOD;
         }
-        for (int round = 0; round < t; ++round) {
-            vector<int> nxt(26);
-            nxt[0] = cnt[25];
-            nxt[1] = (cnt[25] + cnt[0]) % mod;
-            for (int i = 2; i < 26; ++i) {
-                nxt[i] = cnt[i - 1];
-            }
-            cnt = move(nxt);
-        }
-        int ans = 0;
-        for (int i = 0; i < 26; ++i) {
-            ans = (ans + cnt[i]) % mod;
-        }
-        return ans;
+        return result;
     }
-
-private:
-    static constexpr int mod = 1000000007;
 };
