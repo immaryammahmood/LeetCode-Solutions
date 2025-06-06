@@ -1,26 +1,22 @@
+char t[100000], xMin[100000];
+int top=-1;
 class Solution {
 public:
-    string robotWithString(string s) {
-        unordered_map<char, int> cnt;
-        for (char c : s) {
-            cnt[c]++;
-        }
-
-        stack<char> stk;
-        string res;
-        char minCharacter = 'a';
-        for (char c : s) {
-            stk.emplace(c);
-            cnt[c]--;
-            while (minCharacter != 'z' && cnt[minCharacter] == 0) {
-                minCharacter++;
-            }
-            while (!stk.empty() && stk.top() <= minCharacter) {
-                res.push_back(stk.top());
-                stk.pop();
+    static string robotWithString(string& s) {
+        int freq[26]={0}, n=s.size();
+        xMin[n-1]=s.back();
+        for(int i=n-2; i>=0; i--)
+            xMin[i]=min(s[i], xMin[i+1]);
+        
+        string p;
+        top=-1;// reset for t
+        p.reserve(n);
+        for(int i=0; i<n; i++){
+            t[++top]=s[i];
+            while(top!=-1 && (i==n-1 ||t[top]<=xMin[i+1])){
+                p+=t[top--];
             }
         }
-
-        return res;
+        return p;
     }
 };
